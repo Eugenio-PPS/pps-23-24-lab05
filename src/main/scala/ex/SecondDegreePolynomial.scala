@@ -11,10 +11,7 @@ trait SecondDegreePolynomial:
   def +(polynomial: SecondDegreePolynomial): SecondDegreePolynomial
   def -(polynomial: SecondDegreePolynomial): SecondDegreePolynomial
 
-private class SecondDegreePolynomialImpl(a: Double, b: Double, c: Double) extends SecondDegreePolynomial:
-  val secondDegree: Double = a
-  val firstDegree: Double = b
-  val constant: Double = c
+private case class SecondDegreePolynomialImpl(secondDegree: Double, firstDegree: Double, constant: Double) extends SecondDegreePolynomial:
   override def +(polynomial: SecondDegreePolynomial): SecondDegreePolynomial =
     SecondDegreePolynomial(
       this.secondDegree + polynomial.secondDegree,
