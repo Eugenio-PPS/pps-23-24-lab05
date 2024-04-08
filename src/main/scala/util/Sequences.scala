@@ -2,6 +2,9 @@ package util
 import Optionals.Optional.*
 import util.Optionals.Optional
 
+import scala.annotation.{tailrec, targetName}
+import scala.collection.mutable.HashSet
+
 object Sequences: // Essentially, generic linkedlists
   
   enum Sequence[E]:
@@ -19,8 +22,12 @@ object Sequences: // Essentially, generic linkedlists
         sequence = Cons(e, sequence)
       sequence.reverse()
 
-
     def empty[A]: Sequence[A] = Nil()
+
+    def fromSeq[A](l: Seq[A]): Sequence[A] =
+      var result: Sequence[A] = empty
+      l.foreach(x => result = result :+ x)
+      result
 
     extension [A](sequence: Sequence[A])
       def head: Optional[A] = sequence match
@@ -51,7 +58,16 @@ object Sequences: // Essentially, generic linkedlists
       def reverse(): Sequence[A] = sequence match
         case Cons(h, t) => t.reverse().concat(Cons(h, Nil()))
         case _ => Nil()
-@main def trySequences =
+
+      @targetName("append")
+      def :+(x: A): Sequence[A] =
+        Sequence.Cons(x, sequence)
+
+      @tailrec
+      def foldLeft[B](acc: B)(mapper: (A, B) => B): B = sequence match
+        case Cons(h, t) => t.foldLeft(mapper(h, acc))(mapper)
+        case Nil() => acc
+@main def trySequences(): Unit =
   import Sequences.* 
   val sequence = Sequence(1, 2, 3)
   println(sequence)
